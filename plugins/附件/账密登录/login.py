@@ -300,7 +300,7 @@ async def loginPassword(chromium_path, workList, uid, headless):
         try:
             now_time = datetime.datetime.now()
             print("循环检测中...")
-            if (now_time - start_time).total_seconds() > 120:
+            if (now_time - start_time).total_seconds() > 90:
                 print("进入超时分支")
                 workList[uid].status = "error"
                 workList[uid].msg = "登录超时"
@@ -405,25 +405,25 @@ async def typephoneuser(page, usernum):
     #    "input[type='tel']", usernum, {"delay": random.randint(50,100)}
     #)
     await page.click(".policy_tip-checkbox")
-    await page.waitFor(random.randint(100, 500))
+    await page.waitFor(random.randint(100, 300))
     await page.click(".getMsg-btn.text-btn.timer")
-    await page.waitFor(random.randint(100, 500))
+    await page.waitFor(random.randint(100, 300))
     await page.waitFor(random.randint(500,1000))
 async def typeuser(page, usernum, passwd):
     print("开始输入账号密码")
     await page.waitForSelector(".J_ping.planBLogin")
     await page.click(".J_ping.planBLogin")
     await page.type(
-        "#username", usernum, {"delay": random.randint(60, 121)}
+        "#username", usernum, {"delay": random.randint(20, 40)}
     )
     await page.type(
-        "#pwd", passwd, {"delay": random.randint(100, 151)}
+        "#pwd", passwd, {"delay": random.randint(20, 40)}
     )
-    await page.waitFor(random.randint(100, 2000))
+    await page.waitFor(random.randint(100, 300))
     await page.click(".policy_tip-checkbox")
-    await page.waitFor(random.randint(100, 2000))
+    await page.waitFor(random.randint(100, 300))
     await page.click(".btn.J_ping.btn-active")
-    await page.waitFor(random.randint(100, 2000))
+    await page.waitFor(random.randint(500, 1000))
 
 
 async def sendSMSDirectly(page):
@@ -938,7 +938,7 @@ async def main(workList, uid, oocr):
             return "unknown"
     print("判断初始化浏览器")
     chromium_path = await init_chrome()
-    headless = False
+    headless = True
     print("选择登录")
     if workList[uid].type == "phone":
         print("选择手机号登录")
