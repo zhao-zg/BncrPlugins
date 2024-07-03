@@ -146,23 +146,22 @@ async def loginPhone(chromium_path, workList, uid, headless):
                 workList[uid].status = "error"
                 workList[uid].msg = "账号或密码不正确"
                 break
+            elif await page.xpath('//*[@id="captcha_modal"]'):
+                print("进入安全验证分支")
+                if await page.xpath('//*[@id="small_img"]'):
+                    print("进入过滑块分支")
 
-            elif await page.xpath('//*[@id="small_img"]'):
-                print("进入过滑块分支")
+                    workList[uid].status = "pending"
+                    workList[uid].msg = "正在过滑块检测"
+                    await verification(page)
+                    await page.waitFor(2000)
+                elif await page.xpath('//*[@id="captcha_modal"]/div/div[3]/button'):
+                    print("进入点形状、颜色验证分支")
 
-                workList[uid].status = "pending"
-                workList[uid].msg = "正在过滑块检测"
-                await verification(page)
-                await page.waitFor(2000)
-                continue
-            elif await page.xpath('//*[@id="captcha_modal"]/div/div[3]/button'):
-                print("进入点形状、颜色验证分支")
-
-                workList[uid].status = "pending"
-                workList[uid].msg = "正在过形状、颜色检测"
-                await verification_shape(page)
-                await page.waitFor(2000)
-
+                    workList[uid].status = "pending"
+                    workList[uid].msg = "正在过形状、颜色检测"
+                    await verification_shape(page)
+                    await page.waitFor(2000)
                 continue
             if False == sms_sent:
                 print("进入直接发短信分支")
@@ -318,21 +317,23 @@ async def loginPassword(chromium_path, workList, uid, headless):
                 workList[uid].status = "error"
                 workList[uid].msg = "账号或密码不正确"
                 break
+            elif await page.xpath('//*[@id="captcha_modal"]'):
+                print("进入安全验证分支")
+                if await page.xpath('//*[@id="small_img"]'):
+                    print("进入过滑块分支")
 
-            elif await page.xpath('//*[@id="small_img"]'):
-                print("进入过滑块分支")
+                    workList[uid].status = "pending"
+                    workList[uid].msg = "正在过滑块检测"
+                    await verification(page)
+                    await page.waitFor(3000)
+                elif await page.xpath('//*[@id="captcha_modal"]/div/div[3]/button'):
+                    print("进入点形状、颜色验证分支")
 
-                workList[uid].status = "pending"
-                workList[uid].msg = "正在过滑块检测"
-                await verification(page)
-                await page.waitFor(3000)
-            elif await page.xpath('//*[@id="captcha_modal"]/div/div[3]/button'):
-                print("进入点形状、颜色验证分支")
-
-                workList[uid].status = "pending"
-                workList[uid].msg = "正在过形状、颜色检测"
-                await verification_shape(page)
-                await page.waitFor(3000)
+                    workList[uid].status = "pending"
+                    workList[uid].msg = "正在过形状、颜色检测"
+                    await verification_shape(page)
+                    await page.waitFor(3000)
+                continue
             if not sms_sent:
 
                 if await page.J(".sub-title"):
@@ -404,24 +405,24 @@ async def typephoneuser(page, usernum):
     #await page.type(
     #    "input[type='tel']", usernum, {"delay": random.randint(50,100)}
     #)
+    await page.waitFor(random.randint(200, 500))
     await page.click(".policy_tip-checkbox")
-    await page.waitFor(random.randint(100, 300))
+    await page.waitFor(random.randint(200, 500))
     await page.click(".getMsg-btn.text-btn.timer")
-    await page.waitFor(random.randint(100, 300))
-    await page.waitFor(random.randint(500,1000))
+    await page.waitFor(random.randint(500, 1000))
 async def typeuser(page, usernum, passwd):
     print("开始输入账号密码")
     await page.waitForSelector(".J_ping.planBLogin")
     await page.click(".J_ping.planBLogin")
     await page.type(
-        "#username", usernum, {"delay": random.randint(20, 40)}
+        "#username", usernum, {"delay": random.randint(10, 20)}
     )
     await page.type(
-        "#pwd", passwd, {"delay": random.randint(20, 40)}
+        "#pwd", passwd, {"delay": random.randint(10, 20)}
     )
-    await page.waitFor(random.randint(100, 300))
+    await page.waitFor(random.randint(200, 500))
     await page.click(".policy_tip-checkbox")
-    await page.waitFor(random.randint(100, 300))
+    await page.waitFor(random.randint(200, 500))
     await page.click(".btn.J_ping.btn-active")
     await page.waitFor(random.randint(500, 1000))
 
