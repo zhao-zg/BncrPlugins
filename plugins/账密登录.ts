@@ -1,10 +1,10 @@
 /**
  * @author 小九九 t.me/gdot0
- * @description 账号密码登录
+ * @description 账密登录
  * @origin 小九九
  * @team 小九九
  * @version v1.0.0
- * @name zzg登录
+ * @name 账密登录
  * @rule ^(手机号登录|密码登录)$
  * @rule ^(手机号登录|密码登录) ([^\s]+)$
  * @rule ^(手机号登录|密码登录) ([^\s]+) ([^\s]+)$
@@ -12,7 +12,7 @@
  * @admin false
  * @public true
  * @disable false
- * @cron 30 30 *\/2 * * *
+ * @cron 30 31 * * * *
  * @classification ["Server"]
  */
 /*
@@ -29,7 +29,7 @@
 4.仅Windows环境下测试，理论上linux也可以
 */
 //配置
-const apiBackend = "http://192.168.2.199:12345"; //后台地址，后台代码见附件文件夹，do not end with '/'
+const apiBackend = "http://192.168.10.3:12345"; //后台地址，后台代码见附件文件夹，do not end with '/'
 const waitTime = 60; //等待用户输入的时间，秒
 let smsRetry = 3; //短信验证允许错几次
 const ReplyMsgs = {
@@ -77,7 +77,7 @@ module.exports = async (s) => {
             const rec = await db.get(pinInDB);
             const { account, password, user, platform } = rec;
             try {
-                await loginPassword(account, password);
+                await dologinPassword(account, password);
             } catch (e) {
                 if (e instanceof NotAutoRenewError) {
                     return;
@@ -109,7 +109,7 @@ module.exports = async (s) => {
             if (isLogin) continue;
             try {
                 log.info(`${pin}过期了，开始登录`);
-                await loginPassword(account, password);
+                await dologinPassword(account, password);
             } catch (e) {
                 if (e instanceof NotAutoRenewError) {
                     log.warn(e);
@@ -224,7 +224,7 @@ module.exports = async (s) => {
     //回复用户登录成功
     if (pin) {
         const maskPin = mask(pin);
-        await s.reply(`${maskPin}账密登录成功`);
+        await s.reply(`${maskPin}登录成功`);
     }
 	
 	
