@@ -12,7 +12,7 @@
  * @admin false
  * @public true
  * @disable false
- * @cron 30 31 * * * *
+ * @cron 30 31 *\/3 * * *
  * @classification ["Server"]
  */
 /*
@@ -236,7 +236,7 @@ module.exports = async (s) => {
     async function doLoginPhone(phone) {
         //主要登录过程
         //提交账号密码
-        let res = await callAPI("/loginPhone", { id: phone, type:"phone", isAuto: false });
+        let res = await callAPI("/login", { id: phone, type:"phone", isAuto: false });
         if (res?.status != "pass") throw new NotAutoRenewError(ReplyMsgs.serverDown);
         log.debug("phase login:" + res.status);
         const uid = res.uid;
@@ -267,7 +267,7 @@ module.exports = async (s) => {
     async function dologinPassword(account, password) {
         //主要登录过程
         //提交账号密码
-        let res = await callAPI("/loginPassword", { id: account, pw: password, type:"password", isAuto: isAuto });
+        let res = await callAPI("/login", { id: account, pw: password, type:"password", isAuto: isAuto });
         if (res?.status != "pass") throw new NotAutoRenewError(ReplyMsgs.serverDown);
         log.debug("phase login:" + res.status);
         const uid = res.uid;
@@ -335,7 +335,7 @@ module.exports = async (s) => {
         //验证码输入
         const smsMsg = await s.waitInput((m) => {
             const msg = m.getMsg();
-            //if (msg == "q") return;
+            if (msg == "q") return;
             if (msg.length != 6) return m.again(ReplyMsgs.wrongCode);
         }, waitTime);
         if (!smsMsg) throw new Error(ReplyMsgs.timeout);
